@@ -1,0 +1,34 @@
+<div class="user-list">
+
+
+    <div class="container">
+
+        <h2>User List</h2>
+
+        <div class="user-header _flex-box _p-10">
+            <div style="width: 55px;">
+                <span>Icon</span>
+            </div>
+            <div style="width: calc(100% - 55px);">
+                <span>Name</span>
+            </div>
+        </div>
+        <ng-container *ngIf="usersList.length > 0; else noUserList">
+            <div class="user" *ngFor="let user of usersList">
+                <img [src]="user['picture']" alt="src/assets/icons/default-user.jpg" class="user-icon ">
+                <span class="pl-15">{{user.name ? user.name : ' No Name '}}</span>
+            </div>
+        </ng-container>
+        <ng-template #noUserList>
+            <ng-container *ngIf="userListLoading;else noUser">
+                <mat-progress-bar mode="indeterminate">
+                </mat-progress-bar>
+            </ng-container>
+            <ng-template #noUser>
+                <div class="_text-align-center matCard ">
+                    No Task
+                </div>
+            </ng-template>
+        </ng-template>
+    </div>
+</div>

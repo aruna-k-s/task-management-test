@@ -1,0 +1,62 @@
+<div class="create-update-form">
+
+    <h1>{{formData ? 'Update' : 'Create'}} Task </h1>
+
+    <div class="task">
+        <form class="task-form" [formGroup]="taskForm">
+
+            <mat-form-field class="form-field">
+                <mat-label>Task Message</mat-label>
+                <textarea matInput placeholder="Message..." formControlName="message"></textarea>
+            </mat-form-field>
+
+            <mat-form-field class="form-field">
+                <mat-label>Due Date</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="due_date">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+
+                <!-- <input matInput type="datetime" name="duedate" formControlName="due_date" > -->
+            </mat-form-field>
+
+            <mat-form-field class="form-field">
+                <mat-label>Priority</mat-label>
+                <mat-select formControlName="priority">
+                    <mat-option [value]="'1'">High</mat-option>
+                    <mat-option [value]="'2'">Medium</mat-option>
+                    <mat-option [value]="'3'">Low</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field class="form-field ">
+                <mat-label class="_flex-box">
+                    User List
+                    <mat-spinner *ngIf="isUserListLoading" [diameter]="20" class="_ml-auto">
+                    </mat-spinner>
+                </mat-label>
+
+                <mat-select formControlName="assigned_to">
+                    <mat-option *ngIf="isUserListLoading" disabled> User List loading </mat-option>
+                    <mat-option *ngFor="let user of userList" [value]="user.id">
+                        {{user.name? user.name: 'No Name' }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <div class="_p-10 _flex-box">
+                <button *ngIf="!isFormSubmitionLoading" [disabled]="!taskForm.valid" class="_ml-auto _border"
+                    type="submit" mat-button (click)=" submitForm()"> Submit</button>
+                <div *ngIf="isFormSubmitionLoading" class="_ml-auto _border _p-5"
+                    style="width: 90px; border-radius: 10px;">
+                    <div class="spinner">
+                        <div class="bounce1"></div>
+                        <div class="bounce2"></div>
+                        <div class="bounce3"></div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+</div>

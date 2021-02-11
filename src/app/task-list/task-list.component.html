@@ -1,0 +1,327 @@
+<div class="_p-10">
+
+    <h1>Task List</h1>
+
+    <div class="task-container _w-100">
+
+
+        <mat-form-field style="display: none;"> <input type="text" name="" id="" matInput> </mat-form-field>
+        <div class="_flex-box">
+            <div class="search-bar _flex-box _w-100 _mr-10">
+                <input type="search" name="searchTask" id="searchTask" matInput class="_w-100" matInput
+                    placeholder="Search here... " #search (keyup)="searchSubject.next(search.value)">
+                <mat-icon>search</mat-icon>
+            </div>
+
+            <button mat-raised-button (click)="priorityFilterEnabled = !priorityFilterEnabled " class="_ml-10 _mr-10">
+                {{priorityFilterEnabled ? 'Hide Filter By Priority' : 'Filter By Priority'}}
+            </button>
+
+        </div>
+
+        <div class="task-list-container _box-shadow ">
+
+            <div class="task-header _flex-box _p-10">
+                <div style="width: 15%;">
+                    <span>Owner</span>
+                </div>
+                <div style="width: 15%;">
+                    <span>Created Date</span>
+                    <button mat-icon-button matTooltip="{{tasksortByTime ? 'Latest First' : ' Oldest First'}}"
+                        (click)="tasksortByTime = !tasksortByTime ; sortTaskByCreatedTime(filteredTaskList,tasksortByTime) ">
+                        <mat-icon>{{tasksortByTime ? 'arrow_upward' : 'arrow_downward'}}</mat-icon>
+                    </button>
+                </div>
+                <div style="width: 15%;">
+                    <span>Due Date</span>
+                </div>
+                <div style="width: 35%;">
+                    <span>Message</span>
+                </div>
+                <div style="width: 10%;">
+                    <span>Priority</span>
+                    <button mat-icon-button matTooltip="{{tasksortByPriority ? 'Lowest First' : 'Highest First'}}"
+                        (click)="tasksortByPriority = !tasksortByPriority ; sortTaskByPriority(filteredTaskList,tasksortByPriority) ">
+                        <mat-icon>{{tasksortByPriority ? 'arrow_upward' :'arrow_downward'}}</mat-icon>
+                    </button>
+                </div>
+                <div style="width: 10%;">
+                    <span>Actions</span>
+                </div>
+            </div>
+            <ng-container *ngIf="filteredTaskList.length > 0;else emptyTaskList">
+                <div class="task-item _flex-box  _p-10" *ngFor="let task of filteredTaskList">
+                    <div style="width: 15%;" class="text-ellipses">
+                        {{task.assigned_name ? task.assigned_name : '' }}
+                    </div>
+                    <div style="width: 15%;" class="text-ellipses">
+                        {{task.created_on ? task.created_on : '-' }}
+                    </div>
+                    <div style="width: 15%;" class="text-ellipses">
+                        {{task.due_date ? task.due_date : '-'}}
+                    </div>
+                    <div style="width: 35%;" class="text-ellipses">
+                        {{task.message ? task.message : ' - ' }}
+                    </div>
+                    <div style="width: 10%;" class="text-ellipses">
+                        {{(task.priority && task.priority <= 3) ? ((task.priority==1) ? 'High' : ((task.priority==2)
+                            ? 'Medium' : 'Low' )) : ' - ' }} </div>
+                            <div style="width: 10%;" class="_flex-box">
+                                <div style="position: relative;">
+                                    <button mat-icon-button matTooltip="delete task" (click)="deleteTask(task)">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                    <mat-spinner *ngIf="task['deleteLoading']" [diameter]="40"
+                                        style="position: absolute; top: 0px;"></mat-spinner>
+                                </div>
+                                <div>
+                                    <button mat-icon-button (click)="updateTask(task)" [matTooltip]="'Update Task'">
+                                        <mat-icon>create</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                    </div>
+            </ng-container>
+            <ng-template #emptyTaskList>
+                <div *ngIf="taskListLoading ; else notask">
+                    <mat-progress-bar mode="indeterminate">
+                    </mat-progress-bar>
+                </div>
+                <ng-template #notask>
+                    <div style="text-align: center; padding: 10px;">No Tasks</div>
+                </ng-template>
+
+            </ng-template>
+        </div>
+    </div>
+
+    <div class="filter-by-priority" *ngIf="priorityFilterEnabled">
+        <div class="_border _box-shadow _mt-10" (drop)="highPriorityDrop($event)" (dragover)="$event.preventDefault()">
+            <h2 class="_pl-10">High Priority Tasks</h2>
+
+            <div class="task-list-container ">
+
+                <div class="task-header _flex-box _p-10">
+                    <div style="width: 15%;">
+                        <span>Owner</span>
+                    </div>
+                    <div style="width: 15%;">
+                        <span>Created Date</span>
+                        <button mat-icon-button
+                            (click)="highPriorityTasksort = !highPriorityTasksort ; sortTaskByCreatedTime(highPriorityTaskList,highPriorityTasksort) ">
+                            <mat-icon>{{highPriorityTasksort ? 'arrow_upward' : 'arrow_downward'}}</mat-icon>
+                        </button>
+                    </div>
+                    <div style="width: 15%;">
+                        <span>Due Date</span>
+                    </div>
+                    <div style="width: 35%;">
+                        <span>Message</span>
+                    </div>
+                    <div style="width: 10%;">
+                        <span>Priority</span>
+                    </div>
+                    <div style="width: 10%;">
+                        <span>Actions</span>
+                    </div>
+                </div>
+                <ng-container
+                    *ngIf="(highPriorityTaskList.length > 0 && !highPriorityTaskListLoading);else emptyHighPriTaskList">
+                    <div class="task-item _flex-box  _p-10" *ngFor="let task of highPriorityTaskList"
+                        (dragstart)="$event.dataTransfer.setData('text' , task.id )" draggable="true">
+                        <div style="width: 15%;" class="text-ellipses">
+                            {{task.assigned_name ? task.assigned_name : '' }}
+                        </div>
+                        <div style="width: 15%;" class="text-ellipses">
+                            {{task.created_on ? task.created_on : '-' }}
+                        </div>
+                        <div style="width: 15%;" class="text-ellipses">
+                            {{task.due_date ? task.due_date : '-'}}
+                        </div>
+                        <div style="width: 35%;" class="text-ellipses">
+                            {{task.message ? task.message : ' - ' }}
+                        </div>
+                        <div style="width: 10%;" class="text-ellipses">
+                            {{'High'}} </div>
+                        <div style="width: 10%;" class="_flex-box">
+                            <div style="position: relative;">
+                                <button mat-icon-button matTooltip="delete task" (click)="deleteTask(task)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                                <mat-spinner *ngIf="task['deleteLoading']" [diameter]="40"
+                                    style="position: absolute; top: 0px;"></mat-spinner>
+                            </div>
+                            <div>
+                                <button mat-icon-button (click)="updateTask(task)" [matTooltip]="'Update Task'">
+                                    <mat-icon>create</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-template #emptyHighPriTaskList>
+
+                    <ng-container *ngIf="highPriorityTaskListLoading ; else noHightask">
+                        <mat-progress-bar mode="indeterminate">
+                        </mat-progress-bar>
+                    </ng-container>
+                    <ng-template #noHightask>
+                        <div style="text-align: center; padding: 10px;">No Tasks</div>
+                    </ng-template>
+                </ng-template>
+            </div>
+        </div>
+
+        <div class="_border _box-shadow _mt-10" (drop)="midPriorityDrop($event)" (dragover)="$event.preventDefault()">
+            <h2 class="_pl-10">Medium Priority Tasks</h2>
+
+            <div class="task-list-container ">
+
+                <div class="task-header _flex-box _p-10">
+                    <div style="width: 15%;">
+                        <span>Owner</span>
+                    </div>
+                    <div style="width: 15%;">
+                        <span>Created Date</span>
+                        <button mat-icon-button
+                            (click)="midPriorityTasksort = !midPriorityTasksort ; sortTaskByCreatedTime(medPriorityTaskList,midPriorityTasksort) ">
+                            <mat-icon>{{midPriorityTasksort ? 'arrow_upward' : 'arrow_downward'}}</mat-icon>
+                        </button>
+                    </div>
+                    <div style="width: 15%;">
+                        <span>Due Date</span>
+                    </div>
+                    <div style="width: 35%;">
+                        <span>Message</span>
+                    </div>
+                    <div style="width: 10%;">
+                        <span>Priority</span>
+                    </div>
+                    <div style="width: 10%;">
+                        <span>Actions</span>
+                    </div>
+                </div>
+                <ng-container
+                    *ngIf="(medPriorityTaskList.length > 0 && !midPriorityTaskListLoading);else emptyMidPriTaskList">
+                    <div class="task-item _flex-box  _p-10" *ngFor="let task of medPriorityTaskList"
+                        (dragstart)="$event.dataTransfer.setData('text' , task.id )" draggable="true">
+                        <div style="width: 15%;" class="text-ellipses">
+                            {{task.assigned_name ? task.assigned_name : '' }}
+                        </div>
+                        <div style="width: 15%;" class="text-ellipses">
+                            {{task.created_on ? task.created_on : '-' }}
+                        </div>
+                        <div style="width: 15%;" class="text-ellipses">
+                            {{task.due_date ? task.due_date : '-'}}
+                        </div>
+                        <div style="width: 35%;" class="text-ellipses">
+                            {{task.message ? task.message : ' - ' }}
+                        </div>
+                        <div style="width: 10%;" class="text-ellipses">
+                            {{'Medium'}} </div>
+                        <div style="width: 10%;" class="_flex-box">
+                            <div style="position: relative;">
+                                <button mat-icon-button matTooltip="delete task" (click)="deleteTask(task)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                                <mat-spinner *ngIf="task['deleteLoading']" [diameter]="40"
+                                    style="position: absolute; top: 0px;"></mat-spinner>
+                            </div>
+                            <div>
+                                <button mat-icon-button (click)="updateTask(task)" [matTooltip]="'Update Task'">
+                                    <mat-icon>create</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-template #emptyMidPriTaskList>
+
+                    <ng-container *ngIf="midPriorityTaskListLoading ; else noMidtask">
+                        <mat-progress-bar mode="indeterminate">
+                        </mat-progress-bar>
+                    </ng-container>
+                    <ng-template #noMidtask>
+                        <div style="text-align: center; padding: 10px;">No Tasks</div>
+                    </ng-template>
+                </ng-template>
+            </div>
+        </div>
+
+
+        <div class="_border _box-shadow _mt-10" (drop)="lowPriorityDrop($event)" (dragover)="$event.preventDefault()">
+            <h2 class="_pl-10">Low Priority Tasks</h2>
+
+            <div class="task-list-container ">
+
+                <div class="task-header _flex-box _p-10">
+                    <div style="width: 15%;">
+                        <span>Owner</span>
+                    </div>
+                    <div style="width: 15%;">
+                        <span>Created Date</span>
+                        <button mat-icon-button
+                            (click)="lowPriorityTasksort = !lowPriorityTasksort ; sortTaskByCreatedTime(lowPriorityTaskList) ">
+                            <mat-icon>{{lowPriorityTasksort ? 'arrow_upward' :'arrow_downward'}}</mat-icon>
+                        </button>
+                    </div>
+                    <div style="width: 15%;">
+                        <span>Due Date</span>
+                    </div>
+                    <div style="width: 35%;">
+                        <span>Message</span>
+                    </div>
+                    <div style="width: 10%;">
+                        <span>Priority</span>
+                    </div>
+                    <div style="width: 10%;">
+                        <span>Actions</span>
+                    </div>
+                </div>
+                <ng-container
+                    *ngIf="(lowPriorityTaskList.length > 0 && !lowPriorityTaskListLoading);else emptyLowPriTaskList">
+                    <div class="task-item _flex-box  _p-10" *ngFor="let task of lowPriorityTaskList"
+                        (dragstart)="$event.dataTransfer.setData('text' , task.id )" draggable="true">
+                        <div style="width: 15%;" class="text-ellipses">
+                            {{task.assigned_name ? task.assigned_name : '' }}
+                        </div>
+                        <div style="width: 15%;" class="text-ellipses">
+                            {{task.created_on ? task.created_on : '-' }}
+                        </div>
+                        <div style="width: 15%;" class="text-ellipses">
+                            {{task.due_date ? task.due_date : '-'}}
+                        </div>
+                        <div style="width: 35%;" class="text-ellipses">
+                            {{task.message ? task.message : ' - ' }}
+                        </div>
+                        <div style="width: 10%;" class="text-ellipses">
+                            {{'Low'}} </div>
+                        <div style="width: 10%;" class="_flex-box">
+                            <div style="position: relative;">
+                                <button mat-icon-button matTooltip="delete task" (click)="deleteTask(task)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                                <mat-spinner *ngIf="task['deleteLoading']" [diameter]="40"
+                                    style="position: absolute; top: 0px;"></mat-spinner>
+                            </div>
+                            <div>
+                                <button mat-icon-button (click)="updateTask(task)" [matTooltip]="'Update Task'">
+                                    <mat-icon>create</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-template #emptyLowPriTaskList>
+                    <ng-container *ngIf="lowPriorityTaskListLoading ; else noLowtask">
+                        <mat-progress-bar mode="indeterminate">
+                        </mat-progress-bar>
+                    </ng-container>
+                    <ng-template #noLowtask>
+                        <div style="text-align: center; padding: 10px;">No Tasks</div>
+                    </ng-template>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</div>

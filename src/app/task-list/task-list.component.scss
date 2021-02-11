@@ -1,0 +1,21 @@
+.task-item {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(0, 0, 0, .1);
+  border-radius: 2px;
+}
+
+.task-header {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(0, 0, 0, .1);
+  font-size: 14px;
+  font-weight: 500;
+  background-color: #f4eefe;
+}
+
+.search-bar {
+  padding: 10px;
+  border: 1px solid rgba(0, 0, 0, .1);
+  border-radius: 14px;
+}
