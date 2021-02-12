@@ -26,7 +26,7 @@
 
         <mat-sidenav-content>
             <div [ngSwitch]="componentName" style="top: 62px ; position: relative;">
-                <app-task-list *ngSwitchCase="'taskList'"></app-task-list>
+                <app-task-list *ngSwitchCase="'taskList'"></app-task-list> 
                 <app-create-update-task *ngSwitchCase="'CreateUpdateTask'"></app-create-update-task>
                 <app-users-list *ngSwitchCase="'UserList'"></app-users-list>
             </div>

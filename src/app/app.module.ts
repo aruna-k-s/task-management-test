@@ -10,23 +10,10 @@ import { UsersListComponent } from './users-list/users-list.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-
-import { MatCardModule } from '@angular/material/card';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatButtonModule } from '@angular/material/button';
 import { DatePipe } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import {  MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FilteredTaskListComponent } from './filtered-task-list/filtered-task-list.component';
+import { SharedMaterialsModule } from './shared/shared-materials/shared-materials.module';
 
 
 @NgModule({
@@ -44,27 +31,11 @@ import { FilteredTaskListComponent } from './filtered-task-list/filtered-task-li
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    MatCardModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatDatepickerModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    MatFormFieldModule,
-    MatNativeDateModule,
-    MatButtonModule,
-    MatIconModule,
-    MatProgressSpinnerModule,
-    MatProgressBarModule,
-    MatDialogModule,
-    MatSidenavModule,
-    MatToolbarModule,
-    MatTooltipModule,
-
-
+    SharedMaterialsModule
+    
   ],
   providers: [
-    DatePipe,
+    DatePipe, // used for formatting the date to yyyy-MM-dd HH-mm-ss
     { provide: MAT_DIALOG_DATA, useValue: {} },
     { provide: MatDialogRef, useValue: {} }],
   bootstrap: [AppComponent],

@@ -35,11 +35,13 @@ export class TaskListComponent implements OnInit {
   ngOnInit(): void {
     this.getTaskList();
 
+    // searching the respective task by its message
     this.searchSubject.pipe(debounceTime(500)).subscribe(res => {
       this.filteredTaskList = this.taskList.filter(e => (e['message'].includes(res)));
     })
   }
 
+  // fetching the taskList from the api
   getTaskList() {
     this.taskListLoading = true;
     this.apiService.getMethod('https://devza.com/tests/tasks/list').subscribe(res => {
@@ -55,12 +57,11 @@ export class TaskListComponent implements OnInit {
     })
   }
 
+  // deleting the respective task
   deleteTask(task) {
 
     const payLoad = new FormData();
-
     payLoad.append('taskid', task.id)
-
     task['deleteLoading'] = true;
     this.apiService.postMethod('https://devza.com/tests/tasks/delete', payLoad).subscribe(res => {
       task['deleteLoading'] = false;
@@ -71,6 +72,7 @@ export class TaskListComponent implements OnInit {
     })
   }
 
+  // function for updating the respective task
   updateTask(task) {
     this.dialog.open(CreateUpdateTaskComponent, {
       data: task,
@@ -82,25 +84,29 @@ export class TaskListComponent implements OnInit {
     });
   }
 
-
+ // accepting the dropped task and changing the priority
   lowPriorityDrop(event) {
     let draggedId = event.dataTransfer.getData('text');
     let payload = this.constructPayLoad(3, draggedId);
     this.updatePriorityOfTask(payload, 3);
   }
 
+ // accepting the dropped task and changing the priority
   highPriorityDrop(event) {
     let draggedId = event.dataTransfer.getData('text');
     let payload = this.constructPayLoad(1, draggedId);
     this.updatePriorityOfTask(payload, 1);
   }
 
+ // accepting the dropped task and changing the priority
   midPriorityDrop(event) {
     let draggedId = event.dataTransfer.getData('text');
     let payload = this.constructPayLoad(2, draggedId);
     this.updatePriorityOfTask(payload, 2);
   }
 
+
+  // updating taskList of respective priority and main task list by calling api
   updatePriorityOfTask(payload, priority) {
 
     switch (priority) {
@@ -136,6 +142,7 @@ export class TaskListComponent implements OnInit {
       })
   }
 
+  // simple function for constructing payload
   constructPayLoad(priority: number, taskId: any) {
     let task = this.taskList.filter(e => e.id == taskId);
     let payLoad = new FormData();
@@ -149,6 +156,7 @@ export class TaskListComponent implements OnInit {
     return payLoad;
   }
   
+  // sorting task by its respective key and status when status is true its high to low
   sortTaskBy(taskList, status, key) {
     let temp = status ? 1 : -1;
     taskList = taskList.sort((a, b) => {
@@ -160,12 +168,14 @@ export class TaskListComponent implements OnInit {
     });
   }
 
+  // refreshing the task list when event emitted by filtered task list component
   refreshList(event) {
     if (event === 'refresh') {
       this.getTaskList();
     }
   }
 
+  // function to open dialog box for creating task
   createTask() {
     this.dialog.open(CreateUpdateTaskComponent, {
       data: {

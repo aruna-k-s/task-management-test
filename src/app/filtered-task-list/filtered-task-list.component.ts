@@ -22,12 +22,10 @@ export class FilteredTaskListComponent implements OnInit {
   }
 
 
+// deleting the respective task
   deleteTask(task) {
-
     const payLoad = new FormData();
-
     payLoad.append('taskid', task.id)
-
     task['deleteLoading'] = true;
     this.apiService.postMethod('https://devza.com/tests/tasks/delete', payLoad).subscribe(res => {
       task['deleteLoading'] = false;
@@ -38,6 +36,7 @@ export class FilteredTaskListComponent implements OnInit {
     })
   }
 
+  // updating the task
   updateTask(task) {
     this.dialog.open(CreateUpdateTaskComponent, {
       data: task,
@@ -49,6 +48,7 @@ export class FilteredTaskListComponent implements OnInit {
     });
   }
 
+  // function for sorting the tasks in taskList
   sortTaskByTime(taskList, status, key) {
     let temp = status ? 1 : -1;
     taskList = taskList.sort((a, b) => {

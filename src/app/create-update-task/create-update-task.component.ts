@@ -47,7 +47,7 @@ export class CreateUpdateTaskComponent implements OnInit {
     }
 
   }
-
+// geetting userList
   getUserList() {
     this.isUserListLoading = true;
     this.apiService.getMethod('https://devza.com/tests/tasks/listusers').subscribe(res => {
@@ -58,6 +58,7 @@ export class CreateUpdateTaskComponent implements OnInit {
     });
   }
 
+  // submitting the user form for updating task or creating new task
   submitForm() {
     let url = (this.formData && this.formData['id']) ? 'https://devza.com/tests/tasks/update' : 'https://devza.com/tests/tasks/create';
 
