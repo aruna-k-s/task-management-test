@@ -50,6 +50,7 @@ export class TaskListComponent implements OnInit {
         this.medPriorityTaskList = this.taskList.filter(e => e.priority == 2);
         this.lowPriorityTaskList = this.taskList.filter(e => e.priority == 3);
         this.filteredTaskList = JSON.parse(JSON.stringify(this.taskList));
+        this.sortTaskBy(this.filteredTaskList, false, 'priority');
       }
     })
   }
@@ -147,8 +148,8 @@ export class TaskListComponent implements OnInit {
 
     return payLoad;
   }
-
-  sortTaskBy(taskList, status,key) {
+  
+  sortTaskBy(taskList, status, key) {
     let temp = status ? 1 : -1;
     taskList = taskList.sort((a, b) => {
       var keyA = new Date(a[key]),
