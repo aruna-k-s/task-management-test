@@ -1,6 +1,6 @@
 <div class="create-update-form">
 
-    <h1>{{formData ? 'Update' : 'Create'}} Task </h1>
+    <h1>{{(formData && formData['id']) ? 'Update' : 'Create'}} Task </h1>
 
     <div class="task">
         <form class="task-form" [formGroup]="taskForm">

@@ -1,25 +1,25 @@
 <div class="container ">
     <mat-toolbar class="toolbar">
-        <button mat-icon-button (click)="snav.toggle();toggle = !toggle">
-            <mat-icon>{{toggle ? 'clear' : 'menu'}}</mat-icon>
+        <button mat-icon-button (click)="snav.toggle();" >
+            <mat-icon>menu</mat-icon>
         </button>
         <h1>Task Management App</h1>
     </mat-toolbar>
 
-    <mat-sidenav-container class="sidenav-container">
-        <mat-sidenav #snav [mode]="'push'">
+    <mat-sidenav-container class="sidenav-container" >
+        <mat-sidenav #snav [mode]="'push'" >
             <div style="top: 63px; position: relative;">
                 <div class="_p-5">
                     <button mat-button class="_w-100" [class.selected]="componentName === 'taskList'"
-                        (click)="showComponent('taskList'); snav.toggle();toggle = !toggle">Task List</button>
+                        (click)="showComponent('taskList'); snav.toggle();">Task List</button>
                 </div>
                 <div class="_p-5">
                     <button mat-button class="_w-100" [class.selected]="componentName === 'CreateUpdateTask'"
-                        (click)="showComponent('CreateUpdateTask');snav.toggle();toggle = !toggle">Create Task</button>
+                        (click)="showComponent('CreateUpdateTask');snav.toggle();">Create Task</button>
                 </div>
                 <div class="_p-5">
                     <button mat-button class="_w-100" [class.selected]="componentName === 'UserList'"
-                        (click)="showComponent('UserList');snav.toggle();toggle = !toggle">UserList</button>
+                        (click)="showComponent('UserList');snav.toggle();">UserList</button>
                 </div>
             </div>
         </mat-sidenav>

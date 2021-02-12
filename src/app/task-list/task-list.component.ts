@@ -24,6 +24,7 @@ export class TaskListComponent implements OnInit {
   highPriorityTaskListLoading: boolean;
   midPriorityTaskListLoading: boolean;
   tasksortByTime = false;
+  tasksortByDueTime = false;
   tasksortByPriority = false;
   highPriorityTasksort = false;
   midPriorityTasksort = false;
@@ -43,7 +44,6 @@ export class TaskListComponent implements OnInit {
     this.taskListLoading = true;
     this.apiService.getMethod('https://devza.com/tests/tasks/list').subscribe(res => {
       this.taskListLoading = false;
-      console.log(res);
       if (res['status'] === 'success') {
         this.taskList = res['tasks'];
         this.highPriorityTaskList = this.taskList.filter(e => e.priority == 1);
@@ -62,7 +62,6 @@ export class TaskListComponent implements OnInit {
 
     task['deleteLoading'] = true;
     this.apiService.postMethod('https://devza.com/tests/tasks/delete', payLoad).subscribe(res => {
-      console.log(res);
       task['deleteLoading'] = false;
       if (res['status'] === 'success') {
         this.taskList = this.taskList.filter(e => e.id !== task.id)
@@ -72,39 +71,33 @@ export class TaskListComponent implements OnInit {
   }
 
   updateTask(task) {
-    console.log(task);
     this.dialog.open(CreateUpdateTaskComponent, {
       data: task,
       width: "500px"
+    }).afterClosed().subscribe(result => {
+      if (result && result['status'] === 'success') {
+        this.getTaskList();
+      }
     });
   }
 
 
   lowPriorityDrop(event) {
     let draggedId = event.dataTransfer.getData('text');
-    console.log(event, event.dataTransfer.getData('text'));
-
     let payload = this.constructPayLoad(3, draggedId);
     this.updatePriorityOfTask(payload, 3);
-
   }
 
   highPriorityDrop(event) {
     let draggedId = event.dataTransfer.getData('text');
-    console.log(event, event.dataTransfer.getData('text'));
-
     let payload = this.constructPayLoad(1, draggedId);
     this.updatePriorityOfTask(payload, 1);
-
   }
 
   midPriorityDrop(event) {
     let draggedId = event.dataTransfer.getData('text');
-    console.log(event, event.dataTransfer.getData('text'));
-
     let payload = this.constructPayLoad(2, draggedId);
     this.updatePriorityOfTask(payload, 2);
-
   }
 
   updatePriorityOfTask(payload, priority) {
@@ -123,7 +116,6 @@ export class TaskListComponent implements OnInit {
         concatMap(e => this.apiService.getMethod('https://devza.com/tests/tasks/list'))
       )
       .subscribe(res => {
-        console.log(res);
         switch (priority) {
           case 1: this.highPriorityTaskListLoading = false;
             break
@@ -145,8 +137,6 @@ export class TaskListComponent implements OnInit {
 
   constructPayLoad(priority: number, taskId: any) {
     let task = this.taskList.filter(e => e.id == taskId);
-    console.log(taskId, task)
-
     let payLoad = new FormData();
 
     payLoad.append('message', task[0].message);
@@ -156,28 +146,35 @@ export class TaskListComponent implements OnInit {
     payLoad.append('taskid', task[0].id);
 
     return payLoad;
-
   }
 
-  sortTaskByCreatedTime(taskList, status) {
+  sortTaskBy(taskList, status,key) {
     let temp = status ? 1 : -1;
     taskList = taskList.sort((a, b) => {
-      var keyA = new Date(a.created_on),
-        keyB = new Date(b.created_on);
+      var keyA = new Date(a[key]),
+        keyB = new Date(b[key]);
       if (keyA < keyB) return temp;
       if (keyA > keyB) return -temp;
       return 0;
     });
   }
 
-  sortTaskByPriority(taskList, status) {
-    let temp = status ? 1 : -1;
-    taskList = taskList.sort((a, b) => {
-      var keyA = new Date(a.priority),
-        keyB = new Date(b.priority);
-      if (keyA < keyB) return temp;
-      if (keyA > keyB) return -temp;
-      return 0;
+  refreshList(event) {
+    if (event === 'refresh') {
+      this.getTaskList();
+    }
+  }
+
+  createTask() {
+    this.dialog.open(CreateUpdateTaskComponent, {
+      data: {
+        create: true
+      },
+      width: "500px"
+    }).afterClosed().subscribe(result => {
+      if (result && result['status'] === 'success') {
+        this.getTaskList();
+      }
     });
   }
 

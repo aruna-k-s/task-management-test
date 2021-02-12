@@ -26,6 +26,7 @@ import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/materia
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { FilteredTaskListComponent } from './filtered-task-list/filtered-task-list.component';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     AppComponent,
     CreateUpdateTaskComponent,
     TaskListComponent,
-    UsersListComponent
+    UsersListComponent,
+    FilteredTaskListComponent
   ],
   imports: [
     BrowserModule,
